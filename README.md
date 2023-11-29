@@ -29,5 +29,14 @@ Tutorial de https://davidkebo.com/cudd , hecho con ctypes
 
  jupyter demostrations:
 
+1) initial demo
+
+2) advanced demo
+
+3) Frame change
+
+4) Linearization
+
+5) Other methods
 
  
