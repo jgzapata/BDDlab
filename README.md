@@ -3,7 +3,7 @@
 
 Tutorial de https://davidkebo.com/cudd , hecho con ctypes
 
-[    Preparo el entorno: biblioteca cudd so, declaraciones de tipo, funciones de utilidad
+<!--   Preparo el entorno: biblioteca cudd so, declaraciones de tipo, funciones de utilidad
 
     1.1) compilo la so (lo hago con el terminal en vez de este notebook). Como dice el readme de cudd-3.0.0, con una opción de configure
 
@@ -23,7 +23,7 @@ Tutorial de https://davidkebo.com/cudd , hecho con ctypes
      - write_dd
      - crear a partir de tabla de verdad
      - añadir un cubo
-]:#
+-->
 
 
 
