@@ -1,7 +1,7 @@
 # BDDlab
  Python ctypes wrap to CUDD library
 
-Tutorial de https://davidkebo.com/cudd , hecho con ctypes
+<!-- Tutorial de https://davidkebo.com/cudd , hecho con ctypes -->
 
 <!--   Preparo el entorno: biblioteca cudd so, declaraciones de tipo, funciones de utilidad
 
@@ -29,7 +29,7 @@ Tutorial de https://davidkebo.com/cudd , hecho con ctypes
 
  jupyter demostrations:
  
-0) [Paper examples][https://github.com/jgzapata/BDDlab/blob/main/PaperExamples.ipynb]
+0) [Paper examples](https://github.com/jgzapata/BDDlab/blob/main/PaperExamples.ipynb)
 
 1) initial demo
 
