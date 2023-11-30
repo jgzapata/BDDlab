@@ -28,6 +28,8 @@ Tutorial de https://davidkebo.com/cudd , hecho con ctypes
 
 
  jupyter demostrations:
+ 
+0) [Paper examples][https://github.com/jgzapata/BDDlab/blob/main/PaperExamples.ipynb]
 
 1) initial demo
 
