@@ -479,7 +479,7 @@ def randomFunc(manager, size, density):
 # número de minterms de un nodo, replica una de cudd
 # no funciona porque no toma en cuenta los complementados
 # no es por eso! es porque no toma en cuenta los saltos de nivel
-def numMinterms_viejo(manager,f,tam, tamOrig):
+def numMinterms_viejo_no(manager,f,tam, tamOrig):
     if libcudd.Cudd_IsConstant(f):
         if libcudd.Cudd_V(f) == 0:
             return 0
@@ -541,7 +541,7 @@ def numMinterms_viejo(manager,f,tam, tamOrig):
 # número de minterms de un nodo, replica una de cudd
 # no funciona porque no toma en cuenta los complementados
 # no es por eso! es porque no toma en cuenta los saltos de nivel
-def numMinterms(manager,f,tam, tamOrig):
+def numMinterms_no(manager,f,tam, tamOrig):
     if libcudd.Cudd_IsConstant(f):
         if libcudd.Cudd_V(f) == 0:
             return 0
@@ -616,7 +616,7 @@ def get_1_Minterm(manager, f,tam):
 
     # Obtener el mintérmino n de f
     result = libcudd.Cudd_bddPickOneMinterm(manager, f, varis_c, tam)
-    
+    libcudd.Cudd_Ref(result)
     return result
 
 
@@ -629,11 +629,16 @@ def get_1_Minterm(manager, f,tam):
 def getSomeMinterms(manager,n, f,tam):
     #result = libcudd.Cudd_ReadZero(manager)
     result = libcudd.Cudd_bddAnd(manager,f, libBDDlab.My_Cudd_Not(f))
+    libcudd.Cudd_Ref(result)
     fdec = f
+    libcudd.Cudd_Ref(fdec)
     for i in range(n):
         temp = get_1_Minterm(manager,fdec,tam)
+        libcudd.Cudd_Ref(temp)       
         result = libcudd.Cudd_bddOr(manager,result,temp)
         fdec = libcudd.Cudd_bddAnd(manager,fdec, libBDDlab.My_Cudd_Not(temp))
+        libcudd.Cudd_RecursiveDeref(manager,temp)
+    libcudd.Cudd_RecursiveDeref(manager,fdec)
     return result
 
     
@@ -645,7 +650,7 @@ def getSomeMinterms(manager,n, f,tam):
 # número de minterms de un nodo, replica una de cudd
 # al final funciona solo para ADD
 # además, que dependa de x0
-def numMintermsAdd2(manager,f,tam, tamOrig):
+def numMintermsAdd2_no(manager,f,tam, tamOrig):
     thenNode = libcudd.Cudd_T(f)
     elseNode = libcudd.Cudd_E(f)
 
@@ -682,7 +687,7 @@ def numMintermsAdd2(manager,f,tam, tamOrig):
 # devuelve los k lexicográficamente primeros minterms
 # que depende de tam variables
 # lanza excepción si no hay bastantes minterms
-def PickFirstMintermsAdd(manager,f,tam,k):
+def PickFirstMintermsAdd_no(manager,f,tam,k):
     # calculo los minterms que tengo
     numMT = libcudd.Cudd_CountMinterm(manager,f,tam)
     if numMT < k:
@@ -989,6 +994,7 @@ def ampliaBaseParcial(manager,f,tam, baseparcial):
     NuevNeg = []
     num_bloq = libcudd.Cudd_CountMinterm(manager,Bloques[0],tam)
     nf=libBDDlab.My_Cudd_Not(f)
+
     for C in Bloques:
         cf = libcudd.Cudd_bddAnd(manager,C,f)
         cnf = libcudd.Cudd_bddAnd(manager,C,nf)
@@ -1018,12 +1024,12 @@ def ampliaBaseParcial(manager,f,tam, baseparcial):
                 temp = libcudd.Cudd_bddAnd(manager,C,libBDDlab.My_Cudd_Not(notemp))
                 NuevPos = NuevPos + [temp]
                 NuevNeg = NuevNeg + [notemp]
-
+                
     # construyo el nuevo elemento de la base
     p = libBDDlab.My_Cudd_Not(libcudd.Cudd_ReadOne(manager))
     for bdd in NuevPos:
         p = libcudd.Cudd_bddOr(migestor,p,bdd)
-    
+
     return p
 
         
