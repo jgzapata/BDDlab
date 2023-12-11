@@ -37,7 +37,7 @@
 
 3) Frame change
 
-4) Linearization
+4) [Linearization](https://github.com/jgzapata/BDDlab/blob/main/Linearization.ipynb)
 
 5) Other methods
 
