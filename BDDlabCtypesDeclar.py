@@ -12,9 +12,12 @@ libBDDlab.My_IsComplemented.argtypes = POINTER(DdNode),
 libBDDlab.My_IsComplemented.restype = ctypes.c_int
 libBDDlab.My_IsConstant.argtypes = POINTER(DdNode),
 libBDDlab.My_IsConstant.restype = ctypes.c_int
+libBDDlab.My_Cudd_NotCond.argtypes = POINTER(DdNode), ctypes.c_int
+libBDDlab.My_Cudd_NotCond.restype = POINTER(DdNode)
 libBDDlab.My_Regular.argtypes = POINTER(DdNode),
 libBDDlab.My_Regular.restype = POINTER(DdNode)
 
+libBDDlab.My_Cudd_PrintInfo.argtypes = POINTER(DdManager),
 
 
 #libBDDlab.MyCudd_PrioritySelect.argtypes =  POINTER(DdManager), POINTER(DdNode), POINTER(POINTER(DdNode)), POINTER(POINTER(DdNode)), POINTER(POINTER(DdNode)), POINTER(DdNode), ctypes.c_int , #aqui iría un puntero a función que no se poner en ctypes

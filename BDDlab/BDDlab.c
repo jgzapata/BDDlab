@@ -58,6 +58,12 @@ int My_IsConstant(DdNode * node) {
    return Cudd_IsConstant(node);
 }
 
+DdNode * My_Cudd_NotCond(DdNode * node, int c) {
+   
+   return Cudd_NotCond(node,c);
+}
+
+
 
 
 
@@ -124,6 +130,13 @@ void setOutput(DdManager *gbm, char* filename)
 void closeOutput(DdManager *gbm) {
    fclose(gbm->out);
 }
+
+void My_Cudd_PrintInfo(DdManager *gbm) {
+  setOutput(gbm,"tempo.txt");
+  Cudd_PrintInfo(gbm,gbm->out);
+  closeOutput(gbm);
+}
+
 
 /**
  * 

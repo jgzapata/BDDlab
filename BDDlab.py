@@ -1,77 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ### 1) Frame: BDDlab demo  
-#Initial examples
-## In[ ]:
+# #####
+#   BDDlab.py
+#      Wrap functions to CUDD
+#      Use with ctypes
+# #####
 
 
-
-
-
-## ##### inicializacion
-
-## In[1]:
-
-
-#import random
-
-
-## In[4]:
-
-
-#get_ipython().run_line_magic('run', '-i cudd.py')
-
-
-## In[5]:
-
-
-#import ctypes
-#libcudd = ctypes.CDLL("./libcudd-3.0.0.so")
-
-
-## In[6]:
-
-
-#get_ipython().run_line_magic('run', '-i cuddCtypesDeclar.py')
-
-
-## In[8]:
-
-
-## principalment para ver dibujos
-#libBDDlab = ctypes.CDLL("./BDDlab/libBDDlab.so")
-
-
-## In[9]:
-
-
-#get_ipython().run_line_magic('run', '-i BDDlabCtypesDeclar.py')
-
-
-## In[10]:
-
-
-#import numpy as np
-
-
-## In[ ]:
-
-
-
-
-
-# #### Funciones
-
-# 
-# 
-# *** A ver, estas funciones no parecen referenciar y desreferenciar como se dice aquí:
-# http://web.mit.edu/sage/export/tmp/y/usr/share/doc/polybori/cudd/node3.html#SECTION00037000000000000000
-# 
-# ***buf***
-
-# In[11]:
-
+# #### Utility function
 
 # comprueba que dos punteros de ctypes son iguales
 # https://stackoverflow.com/questions/69506584/how-to-test-for-pointer-equality-in-python-ctypes
@@ -80,10 +17,7 @@ def eqPtr(p1,p2):
     rval_via_void = ctypes.cast(p2, ctypes.c_void_p).value
     return ptr_via_void == rval_via_void
 
-
-# ##### Funciones de volcado
-
-# In[12]:
+# ##### Dump functions
 
 
 def medidas(manager, nodo):
@@ -93,9 +27,6 @@ def medidas(manager, nodo):
     print("caminos al 1: ", libcudd.Cudd_CountPathsToNonZero(nodo))
     print("hojas: ", libcudd.Cudd_CountLeaves(nodo))
     print("contador de referencias: ", libcudd.Cudd_CheckZeroRef(manager))
-
-
-# In[13]:
 
 
 def grafica(manager, bdd):
@@ -108,9 +39,6 @@ def grafica(manager, bdd):
     display(Image(filename='./tempo.png') )
 
 
-# In[14]:
-
-
 def graficaplus(manager, bdd):
     bddAdd = libcudd.Cudd_BddToAdd(manager,bdd)
     libcudd.Cudd_Ref(bddAdd)
@@ -121,17 +49,11 @@ def graficaplus(manager, bdd):
     display(Image(filename='./tempo.png') )
 
 
-# In[15]:
-
-
 def graficaComp(manager, bdd):
     libBDDlab.write_dd(manager, bdd, b'tempo.dot')
     import os 
     os.system('dot -Tpng tempo.dot > tempo.png')
     display(Image(filename='./tempo.png') )
-
-
-# In[16]:
 
 
 def MyPrintMinterm(manager,f):
@@ -143,9 +65,6 @@ def MyPrintMinterm(manager,f):
     print(file.read(), flush=True)
     file.close()
     return
-
-
-# In[17]:
 
 
 # dado el BDD de una relación R, representa
@@ -173,9 +92,6 @@ def graficaRel(manager,R,tam):
     os.system('dot -Tpng tempo.dot > tempo.png')
     display(Image(filename='./tempo.png') )
     return
-
-
-# In[18]:
 
 
 # dado el BDD de una relación R, representa
@@ -213,9 +129,6 @@ def graficaRelfunc(manager,R, f, tam):
     return
 
 
-# In[19]:
-
-
 # dado el BDD de una relación R, representa
 # el grafo de esa relación
 # los nodos tienen color si f vale 1
@@ -251,16 +164,7 @@ def graficaRelfuncdir(manager,R, f, tam, tool):
     return
 
 
-# In[ ]:
-
-
-
-
-
-# ##### Funciones de medidas
-
-# In[20]:
-
+# ##### Measure functions
 
 # dado un bdd f, calcula su perfil, profile, 
 # lista con el número de nodos para cada variable
@@ -291,9 +195,6 @@ def profile(manager,f):
     libcudd.Cudd_GenFree(iterator)
     
     return prof
-
-
-# In[21]:
 
 
 # dado un bdd f, calcula su perfil, profile, 
@@ -330,18 +231,12 @@ def profileim(manager,f):
     return prof
 
 
-# In[22]:
-
-
 # dado un bdd f, encuentra la variable x_level que más nodos tiene. La primera
 def maxNodeLevel(manager,f):
     prof =  profile(manager, f)
     maxx = max(prof)
     argmaxl = [i for i in range(len(prof)) if prof[i]==maxx]
     return argmaxl[0]
-
-
-# In[23]:
 
 
 # dado un gestor, encuentra el level x_level máximo
@@ -352,15 +247,7 @@ def maxVarLevel(manager):
             return i-1
 
 
-# In[ ]:
-
-
-
-
-
-# ##### Funciones de test
-
-# In[24]:
+# ##### Test functions
 
 
 # evalua las funciones fa en los arrays de lista A
@@ -384,23 +271,15 @@ def comprueba(manager,fa,listaA, fb, listaB):
     libcudd.Cudd_RecursiveDeref(manager,f_bAdd)
 
 
-# In[ ]:
 
+# ##### Creation functions
 
-
-
-
-# ##### Funciones de creación
-
-# In[25]:
 
 
 # genera lista de arrays de B^n
 def BoolAlg(n):
     return [[int(x) for x in '{:0{size}b}'.format(i, size=n)] for i in range(2**n)]
 
-
-# In[26]:
 
 
 #returna el bdd corrspondiente a una lista de mintérminos
@@ -420,8 +299,7 @@ def funcMinterm(manager, lista):
     return elBDD
 
 
-# In[27]:
-
+  
 
 #returna el bdd corrspondiente a una lista de mintérminos
 # controla que se usen solo las variables iniciales
@@ -459,150 +337,19 @@ def funcMintermIni(manager, lista):
     return elBDD
 
 
-# In[28]:
-
-
+  
 # genera una función al azar de size variables 
 # density indica la densidad del onset
 def randomFunc(manager, size, density):
-    import random
+    import numpy as np
     Bn = BoolAlg(size)
     # 1/(1-density) es una cuenta
-    minterm = [int(random.uniform(0, 1.0/(1.0-density))) for _ in range(len(Bn))]
+    minterm = [np.random.binomial(1, density) for _ in range(len(Bn))]
     arr_f = [Bn[i] for i in  range(0,len(Bn)) if minterm[i]==1]
     return funcMintermIni(migestor,arr_f)
 
 
-# In[29]:
 
-
-# número de minterms de un nodo, replica una de cudd
-# no funciona porque no toma en cuenta los complementados
-# no es por eso! es porque no toma en cuenta los saltos de nivel
-def numMinterms_viejo_no(manager,f,tam, tamOrig):
-    if libcudd.Cudd_IsConstant(f):
-        if libcudd.Cudd_V(f) == 0:
-            return 0
-        else:
-            print("aporta")
-            return 1
-    
-    t = libcudd.Cudd_T(f)
-    print("t ",libBDDlab.indiceVar(t))
-    print("t ",libBDDlab.indiceVar(libBDDlab.My_Regular(t)))
-    if libBDDlab.My_IsComplemented(f):
-        thenNode = libBDDlab.My_Regular(libBDDlab.My_Cudd_Not(t))
-    else:
-        thenNode = libBDDlab.My_Regular(t)
-    print("thenNode ",libBDDlab.indiceVar(thenNode))
-    print("thenNode ",libBDDlab.indiceVar(libBDDlab.My_Regular(thenNode)))
- 
-        
-        
-    e = libcudd.Cudd_E(f)
-    if libBDDlab.My_IsComplemented(f):
-        #elseNode = libBDDlab.My_Cudd_Not(libBDDlab.My_Regular(libcudd.Cudd_E(f)))
-        elseNode = libBDDlab.My_Cudd_Not(libcudd.Cudd_E(f))
-    else:
-        elseNode = e
-
-
-    if libcudd.Cudd_IsConstant(thenNode):
-        print("es esto")
-        levelT = tamOrig
-        contribT = 1
-    else:
-        levelT = libBDDlab.indiceVar(thenNode)
-        
-        print("tam ",tam )
-        print("levelt ",levelT)
-        print("posit ",tam - levelT)
-        contribT = numMinterms(manager,thenNode,tam - levelT, tamOrig)
-        
-    diffthen = levelT-libBDDlab.indiceVar(libBDDlab.My_Regular(f))
-    
-    print("T ",levelT,libBDDlab.indiceVar(libBDDlab.My_Regular(f)) ,diffthen)
-    if libcudd.Cudd_IsConstant(elseNode):
-        levelE = tamOrig
-        contribE = 0
-    else:
-        levelE = libBDDlab.indiceVar(libBDDlab.My_Regular(elseNode))
-        contribE = numMinterms(manager,elseNode,tam - levelE, tamOrig)
-            
-    diffelse = levelE-libBDDlab.indiceVar(libBDDlab.My_Regular(f))
-    print("E ",levelE,libBDDlab.indiceVar(libBDDlab.My_Regular(f)) ,diffelse)
-    
-    return (2**(diffthen-1))*contribT+(2**(diffelse-1))*contribE
-
-
-# In[30]:
-
-
-# número de minterms de un nodo, replica una de cudd
-# no funciona porque no toma en cuenta los complementados
-# no es por eso! es porque no toma en cuenta los saltos de nivel
-def numMinterms_no(manager,f,tam, tamOrig):
-    if libcudd.Cudd_IsConstant(f):
-        if libcudd.Cudd_V(f) == 0:
-            return 0
-        else:
-            print("aporta")
-            return 1
-    print("sí")
-    t = libcudd.Cudd_T(f)
-    print("t ",libBDDlab.indiceVar(t))
-    print("t ",libBDDlab.indiceVar(libBDDlab.My_Regular(t)))
-    if libBDDlab.My_IsComplemented(f):
-        thenNode = libBDDlab.My_Regular(libBDDlab.My_Cudd_Not(t))
-    else:
-        thenNode = libBDDlab.My_Regular(t)
-    print("thenNode ",libBDDlab.indiceVar(thenNode))
-    print("thenNode ",libBDDlab.indiceVar(libBDDlab.My_Regular(thenNode)))
- 
-        
-        
-    e = libcudd.Cudd_E(f)
-    if libBDDlab.My_IsComplemented(f):
-        #elseNode = libBDDlab.My_Cudd_Not(libBDDlab.My_Regular(libcudd.Cudd_E(f)))
-        elseNode = libBDDlab.My_Cudd_Not(libcudd.Cudd_E(f))
-    else:
-        elseNode = e
-
-
-    if libcudd.Cudd_IsConstant(thenNode):
-        print("es esto")
-        levelT = tamOrig
-        contribT = 1
-    else:
-        levelT = libBDDlab.indiceVar(thenNode)
-        print("tam ",tam )
-        print("levelt ",levelT)
-        print("entro por t con ",tam - levelT -1," y orig ",tamOrig)
-        contribT = numMinterms(manager,thenNode,tam - levelT -1, tamOrig)
-        
-    diffthen = levelT-libBDDlab.indiceVar(libBDDlab.My_Regular(f))
-    print("T ",levelT,libBDDlab.indiceVar(libBDDlab.My_Regular(f)) ,diffthen)
-    
-    if libcudd.Cudd_IsConstant(elseNode):
-        levelE = tamOrig
-        contribE = 0
-    else:
-        levelE = libBDDlab.indiceVar(libBDDlab.My_Regular(elseNode))
-        print("levele ",levelE)
-        print("entro por e con ",tam - levelE -1," y orig ",tamOrig)
-        contribE = numMinterms(manager,elseNode,tam - levelE -1, tamOrig)
-            
-    diffelse = levelE-libBDDlab.indiceVar(libBDDlab.My_Regular(f))
-    print("E ",levelE,libBDDlab.indiceVar(libBDDlab.My_Regular(f)) ,diffelse)
-    
-    print("retorno: ",(2**(diffthen-1))*contribT+(2**(diffelse-1))*contribE)
-    return (2**(diffthen-1))*contribT+(2**(diffelse-1))*contribE
-
-
-# In[31]:
-
-
-# tercer intento, con chatgpt, ese cuñado
 # que dependa de las tam primeras variables
 # esta parece que sí funciona
 def get_1_Minterm(manager, f,tam):
@@ -618,9 +365,6 @@ def get_1_Minterm(manager, f,tam):
     result = libcudd.Cudd_bddPickOneMinterm(manager, f, varis_c, tam)
     libcudd.Cudd_Ref(result)
     return result
-
-
-# In[32]:
 
 
 # devuelve el bdd de n minterms de f
@@ -641,147 +385,254 @@ def getSomeMinterms(manager,n, f,tam):
     libcudd.Cudd_RecursiveDeref(manager,fdec)
     return result
 
-    
-
-
-# In[33]:
-
-
-# número de minterms de un nodo, replica una de cudd
-# al final funciona solo para ADD
-# además, que dependa de x0
-def numMintermsAdd2_no(manager,f,tam, tamOrig):
-    thenNode = libcudd.Cudd_T(f)
-    elseNode = libcudd.Cudd_E(f)
-
-    if libcudd.Cudd_IsConstant(thenNode):
-        levelT = tamOrig
-        if libcudd.Cudd_V(thenNode) == 0:
-            contribT = 0
+      
+      
+#    
+# manager:  gestor
+# f: funcion de la que se devolverán los k primeros minterms
+# k: números de minterms pedidos
+# endLev: nivel de la última veriable que se considera para f
+#
+# Esto es para que el número de variables efectivas en f es endLev - myLev + 1
+# Y para que el número de mintérminos sea  libcudd.Cudd_CountMinterm(manager, f, endLev - myLev + 1)
+def FirstMinterms(manager,f, k,endLev):
+  # para acabar cuanto antes (profilar si esto ayuda o dificulta)
+  #numf =  libcudd.Cudd_CountMinterm(manager, f, endLev - myLev + 1) # de a hasta b inclusive hay b-a+1
+  #if numf == k:
+  #  return f
+  # 
+  
+  myLev = libcudd.Cudd_NodeReadIndex(f)
+  #Caso base
+  if (myLev == endLev): 
+    if libBDDlab.My_IsConstant(libcudd.Cudd_E(f)) and libBDDlab.My_IsConstant(libcudd.Cudd_T(f)):
+      if k == 0:
+        return libcudd.Cudd_ReadLogicZero(manager)
+      if k == 1:
+        if libBDDlab.My_IsComplemented(f):
+          return libBDDlab.My_Cudd_Not(libcudd.Cudd_bddIthVar(migestor,endLev))
         else:
-            contribT = 1   
+          return libcudd.Cudd_bddIthVar(migestor,endLev)
+      print(k, flush=True)
+      raise SystemExit('son demasiados minterms.')
+      return -1 # no hay implementado control de error
+  else:  # otros casos, recursivos 
+    if libBDDlab.My_IsComplemented(f):  # aplicar Morgan?
+      elseNodeUnc = libBDDlab.My_Cudd_Not(libcudd.Cudd_E(f))
+      thenNodeUnc = libBDDlab.My_Cudd_Not(libcudd.Cudd_T(f))
     else:
-        levelT = libBDDlab.indiceVar(thenNode)
-        contribT = numMintermsAdd2(manager,thenNode,tam - levelT, tamOrig)
-        
-    diffthen = levelT-libBDDlab.indiceVar(f)
-    
-    if libcudd.Cudd_IsConstant(elseNode):
-        levelE = tamOrig
-        if libcudd.Cudd_V(elseNode) == 0:
-            contribE = 0
-        else:
-            contribE = 1   
-    else:
-        levelE = libBDDlab.indiceVar(libBDDlab.My_Regular(elseNode))
-        contribE = numMintermsAdd2(manager,elseNode,tam - levelE, tamOrig)
-            
-    diffelse = levelE-libBDDlab.indiceVar(f)
-    
-    return (2**(diffthen-1))*contribT+(2**(diffelse-1))*contribE
+      elseNodeUnc = libcudd.Cudd_E(f)
+      thenNodeUnc = libcudd.Cudd_T(f)
+    xL = libcudd.Cudd_bddIthVar(manager,myLev) 
+    # al retornar, hacer and con xL o con -xL para que lo retornado tenga el nivel de f
+    elseNodeLev = libcudd.Cudd_NodeReadIndex(elseNodeUnc)
+    thenNodeLev = libcudd.Cudd_NodeReadIndex(thenNodeUnc)
+    ##  WOE,WOT # without lev jump neither in elsethen
+    if (elseNodeLev == myLev + 1) and (thenNodeLev == myLev + 1): 
+      numElseNode =  libcudd.Cudd_CountMinterm(manager, elseNodeUnc, endLev - elseNodeLev + 1)
+      if numElseNode >= k:
+        recur = FirstMinterms(manager,elseNodeUnc, k, endLev)
+        libcudd.Cudd_Ref(recur)
+        ret = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), recur)
+        libcudd.Cudd_Ref(ret)
+        libcudd.Cudd_RecursiveDeref(manager,recur)
+        return ret
+      else:   # numElse < k
+        remain = FirstMinterms(manager, thenNodeUnc, k - numElseNode, endLev)
+        libcudd.Cudd_Ref(remain)
+        ret1 = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), elseNodeUnc)
+        libcudd.Cudd_Ref(ret1)  
+        ret2 = libcudd.Cudd_bddAnd(manager, xL, remain)
+        libcudd.Cudd_Ref(ret2)  
+        libcudd.Cudd_RecursiveDeref(manager,remain)
+        ret = libcudd.Cudd_bddOr(manager, ret1,ret2)
+        libcudd.Cudd_Ref(ret)          
+        libcudd.Cudd_RecursiveDeref(manager,remain)
+        libcudd.Cudd_RecursiveDeref(manager,ret1)
+        libcudd.Cudd_RecursiveDeref(manager,ret2)
+        return ret
+    ##  WE,WOT # with lev jump in else, not in then
+    if (elseNodeLev > myLev + 1) and (thenNodeLev == myLev + 1): 
+      xL1 = libcudd.Cudd_bddIthVar(manager,myLev + 1)
+      f0 = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL1), elseNodeUnc)
+      libcudd.Cudd_Ref(f0)
+      numf0 = libcudd.Cudd_CountMinterm(manager, f0, endLev - myLev) # debería ser endLev - (myLev+1) +1
+      if numf0 >= k:
+        preret = FirstMinterms(manager, f0, k, endLev)
+        libcudd.Cudd_Ref(preret)
+        libcudd.Cudd_RecursiveDeref(manager,f0)
+        ret = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), preret)
+        libcudd.Cudd_RecursiveDeref(manager,preret)
+        libcudd.Cudd_Ref(ret)
+        return ret
+      f1 = libcudd.Cudd_bddAnd(manager, xL1, elseNodeUnc)
+      libcudd.Cudd_Ref(f1)
+      numf1 =  libcudd.Cudd_CountMinterm(manager, f1, endLev - myLev)
+      if numf0 + numf1 >= k:
+        remain = FirstMinterms(manager,  f1, k- numf0, endLev)
+        libcudd.Cudd_Ref(remain)
+        preret = libcudd.Cudd_bddOr(manager, f0, remain)
+        libcudd.Cudd_Ref(preret)
+        ret = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), preret)
+        libcudd.Cudd_Ref(ret)
+        libcudd.Cudd_RecursiveDeref(manager,remain)
+        libcudd.Cudd_RecursiveDeref(manager,preret)
+        libcudd.Cudd_RecursiveDeref(manager,f0)
+        libcudd.Cudd_RecursiveDeref(manager,f1)
+        return ret
+      numElseNodeAcc = numf0+ numf1
+      remain = FirstMinterms(manager, thenNodeUnc, k - numElseNodeAcc, endLev)
+      libcudd.Cudd_Ref(remain) 
+      ret1 = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), elseNodeUnc)
+      libcudd.Cudd_Ref(ret1)  
+      ret2 = libcudd.Cudd_bddAnd(manager, xL, remain)
+      libcudd.Cudd_Ref(ret2)  
+      libcudd.Cudd_RecursiveDeref(manager,remain)
+      ret = libcudd.Cudd_bddOr(manager, ret1,ret2)
+      libcudd.Cudd_Ref(ret)          
+      libcudd.Cudd_RecursiveDeref(manager,ret1)
+      libcudd.Cudd_RecursiveDeref(manager,ret2)
+      return ret
+    ##  WOE,WT # without lev jump in else, but yes in then 
+    if (elseNodeLev == myLev + 1) and (thenNodeLev > myLev + 1): 
+      numElseNode =  libcudd.Cudd_CountMinterm(manager, elseNodeUnc, endLev - elseNodeLev +1)
+      numThenNode =  libcudd.Cudd_CountMinterm(manager, thenNodeUnc, endLev - elseNodeLev +1)
+      if numElseNode >= k:
+        recur = FirstMinterms(manager,elseNodeUnc, k, endLev)
+        libcudd.Cudd_Ref(recur)
+        ret = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), recur)
+        libcudd.Cudd_Ref(ret)
+        libcudd.Cudd_RecursiveDeref(manager,recur)
+        return ret
+      else:   # numElse < k , with level jump in then
+        xL1 = libcudd.Cudd_bddIthVar(manager,myLev + 1)
+        f2 = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL1), thenNodeUnc)
+        libcudd.Cudd_Ref(f2)
+        numf2 =  libcudd.Cudd_CountMinterm(manager, f2, endLev - myLev)
+        if numElseNode+numf2 >= k:
+          remain = FirstMinterms(manager,  f2, k- numElseNode, endLev)
+          libcudd.Cudd_Ref(remain)
+          viaElse = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL),elseNodeUnc)
+          libcudd.Cudd_Ref(viaElse)
+          viaRemain = libcudd.Cudd_bddAnd(manager, xL,remain)
+          libcudd.Cudd_Ref(viaRemain)
+          ret = libcudd.Cudd_bddOr(manager, viaElse, viaRemain)
+          libcudd.Cudd_Ref(ret)
+          libcudd.Cudd_RecursiveDeref(manager,viaElse)
+          libcudd.Cudd_RecursiveDeref(manager,viaRemain)
+          libcudd.Cudd_RecursiveDeref(manager,remain)
+          libcudd.Cudd_RecursiveDeref(manager,f2)
+          return ret
+        f3 = libcudd.Cudd_bddAnd(manager, xL1, thenNodeUnc)
+        libcudd.Cudd_Ref(f3)
+        remain = FirstMinterms(manager,  f3, k- numElseNode-numf2, endLev)
+        viaElse = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL),elseNodeUnc)
+        libcudd.Cudd_Ref(viaElse)
+        ret2 = libcudd.Cudd_bddOr(manager, f2, remain)
+        libcudd.Cudd_Ref(ret2)
+        preret = libcudd.Cudd_bddAnd(manager, xL,ret2)
+        libcudd.Cudd_Ref(preret)
+        ret = libcudd.Cudd_bddOr(manager, viaElse, preret)
+        libcudd.Cudd_Ref(ret)
+        libcudd.Cudd_RecursiveDeref(manager,ret2)
+        libcudd.Cudd_RecursiveDeref(manager,preret)
+        libcudd.Cudd_RecursiveDeref(manager,remain)
+        libcudd.Cudd_RecursiveDeref(manager,viaElse)
+        libcudd.Cudd_RecursiveDeref(manager,f2)
+        libcudd.Cudd_RecursiveDeref(manager,f3)
+        return ret
+    ##  WE,WT # with lev jump in both else and then
+    if (elseNodeLev > myLev + 1) and (thenNodeLev > myLev + 1): 
+      xL1 = libcudd.Cudd_bddIthVar(manager,myLev + 1)
+      f0 = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL1), elseNodeUnc)
+      libcudd.Cudd_Ref(f0)
+      numf0 =  libcudd.Cudd_CountMinterm(manager, f0, endLev - myLev)
+      if numf0 >= k:
+        preret = FirstMinterms(manager,  f0, k, endLev)
+        libcudd.Cudd_Ref(preret)
+        libcudd.Cudd_RecursiveDeref(manager,f0)
+        ret = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), preret)
+        libcudd.Cudd_RecursiveDeref(manager,preret)
+        libcudd.Cudd_Ref(ret)
+        return ret
+      f1 = libcudd.Cudd_bddAnd(manager, xL1, elseNodeUnc)
+      libcudd.Cudd_Ref(f1)
+      numf1 =  libcudd.Cudd_CountMinterm(manager, f1, endLev - myLev)
+      if numf0 + numf1 >= k:
+        remain = FirstMinterms(manager,  f1, k- numf0, endLev)
+        libcudd.Cudd_Ref(remain)
+        preret = libcudd.Cudd_bddOr(manager, f0, remain)
+        libcudd.Cudd_Ref(preret)
+        ret = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), preret)
+        libcudd.Cudd_Ref(ret)
+        libcudd.Cudd_RecursiveDeref(manager,remain)
+        libcudd.Cudd_RecursiveDeref(manager,preret)
+        libcudd.Cudd_RecursiveDeref(manager,f0)
+        libcudd.Cudd_RecursiveDeref(manager,f1)
+        return ret
+      f2 = libcudd.Cudd_bddAnd(manager,  libBDDlab.My_Cudd_Not(xL1), thenNodeUnc)
+      libcudd.Cudd_Ref(f2)
+      numf2 =  libcudd.Cudd_CountMinterm(manager, f2, endLev - myLev)
+      if numf0+numf1+numf2 >= k:
+        preremain = FirstMinterms(manager,  f2, k- numf0 -numf1, endLev)
+        libcudd.Cudd_Ref(preremain)
+        preret1 = libcudd.Cudd_bddOr(manager, f0, f1)
+        libcudd.Cudd_Ref(preret1)
+        ret1 = libcudd.Cudd_bddAnd(manager,libBDDlab.My_Cudd_Not(xL),preret1)
+        libcudd.Cudd_Ref(ret1)
+        remain = libcudd.Cudd_bddAnd(manager,xL,preremain)
+        libcudd.Cudd_Ref(remain)
+        ret = libcudd.Cudd_bddOr(manager, ret1, remain)
+        libcudd.Cudd_Ref(ret)
+        libcudd.Cudd_RecursiveDeref(manager,ret1)
+        libcudd.Cudd_RecursiveDeref(manager,preret1)
+        libcudd.Cudd_RecursiveDeref(manager,preremain)
+        libcudd.Cudd_RecursiveDeref(manager,remain)
+        libcudd.Cudd_RecursiveDeref(manager,f0)
+        libcudd.Cudd_RecursiveDeref(manager,f1)
+        libcudd.Cudd_RecursiveDeref(manager,f2)
+        return ret
+      f3 = libcudd.Cudd_bddAnd(manager, xL1, thenNodeUnc)
+      libcudd.Cudd_Ref(f3)
+      remain = FirstMinterms(manager,  f3, k- numf0 -numf1-numf2, endLev)
+      libcudd.Cudd_Ref(remain)
+      preret1 = libcudd.Cudd_bddOr(manager, f0, f1)
+      libcudd.Cudd_Ref(preret1)
+      ret1 = libcudd.Cudd_bddAnd(manager, libBDDlab.My_Cudd_Not(xL), preret1)
+      libcudd.Cudd_Ref(ret1)
+      preret2 = libcudd.Cudd_bddOr(manager, f2,remain)
+      libcudd.Cudd_Ref(preret2)
+      ret2 = libcudd.Cudd_bddAnd(manager, xL, preret2)
+      libcudd.Cudd_Ref(ret2)
+      ret = libcudd.Cudd_bddOr(manager, ret1, ret2)
+      libcudd.Cudd_Ref(ret)
+      libcudd.Cudd_RecursiveDeref(manager,preret2)
+      libcudd.Cudd_RecursiveDeref(manager,preret1)
+      libcudd.Cudd_RecursiveDeref(manager,ret1)
+      libcudd.Cudd_RecursiveDeref(manager,ret2)
+      libcudd.Cudd_RecursiveDeref(manager,remain)
+      libcudd.Cudd_RecursiveDeref(manager,f0)
+      libcudd.Cudd_RecursiveDeref(manager,f1)
+      libcudd.Cudd_RecursiveDeref(manager,f2)
+      libcudd.Cudd_RecursiveDeref(manager,f3)
+      return ret 
+      
+#    
 
 
-# In[34]:
 
-
-# devuelve los k lexicográficamente primeros minterms
-# que depende de tam variables
-# lanza excepción si no hay bastantes minterms
-def PickFirstMintermsAdd_no(manager,f,tam,k):
-    # calculo los minterms que tengo
-    numMT = libcudd.Cudd_CountMinterm(manager,f,tam)
-    if numMT < k:
-        raise Exception("Not enough minterms.")
-    if numMT == k:
-        return f
-
-    # veo los hijos
-
-    thenNode = libcudd.Cudd_T(f)
-    elseNode = libcudd.Cudd_E(f)
-
-    numThen = libcudd.Cudd_CountMinterm(manager,thenNode,tam-1)
-    if numThen >= k:
-        print("numthen",numThen)
-        grafica(manager,thenNode)
-        return PickFirstMintermsAdd(manager,thenNode,tam-1,k)
-    else:
-        faltan = k - numThen
-        print("faltan",faltan)
-        grafica(manager,elseNode)
-        faltaNode = PickFirstMintermsAdd(manager,elseNode,tam -1,faltan)
-        return libcudd.Cudd_bddAnd(manager, thenNode, faltaNode)
-    
-    print("f: ", libcudd.Cudd_CountMinterm(manager,f,tam))
-    print("then: ", libcudd.Cudd_CountMinterm(manager,thenNode,tam-1))
-    print("else: ", libcudd.Cudd_CountMinterm(manager,elseNode,tam-1))
-    
-    
-    return
-    if libcudd.Cudd_IsConstant(thenNode):
-        levelT = tamOrig
-        if libcudd.Cudd_V(thenNode) == 0:
-            NcontribT = 0
-        else:
-            NcontribT = 1   
-    else:
-        levelT = libBDDlab.indiceVar(thenNode)
-        contribT = numMintermsAdd2(manager,thenNode,tam - levelT, tamOrig)
-        
-
-    if libcudd.Cudd_IsConstant(thenNode):
-        levelT = tam
-    else:
-        levelT = libBDDlab.indiceVar(libBDDlab.My_Regular(thenNode))
-            
-    diffthen = levelT-libBDDlab.indiceVar(f)
-
-    #if libcudd.Cudd_IsConstant(elseNode):
-        #levelE = tam
-
-            
-    diffelse = levelE-libBDDlab.indiceVar(f)
-    
-    numMThijo0 = libcudd.Cudd_CountMinterm(manager,elseNode,tam - levelE)
-    numMThijo1 = libcudd.Cudd_CountMinterm(manager,thenNode,tam - levelT)
-    # caso base
-    print(numMThijo0,numMThijo1)
-    print(levelE,levelT)
-    print(libBDDlab.indiceVar(libBDDlab.My_Regular(libBDDlab.My_Cudd_Not(libcudd.Cudd_T(libcudd.Cudd_E(f))))))
-    print(libBDDlab.indiceVar(libBDDlab.My_Regular(libcudd.Cudd_T(libcudd.Cudd_E(f)))))
-    print(libBDDlab.indiceVar(libBDDlab.My_Regular(f)))
-    return elseNode
-    
-    # case recursivo
-
-
-# In[35]:
-
-
-# otro intento de coger 
-
-
-# In[36]:
-
-
-# devuelbe el BDD que calcula la paridad de las size priemras variables
+# devuelve el BDD que calcula la paridad de las size priemras variables
 def parity(manager, size):
     par = libcudd.Cudd_ReadLogicZero(manager)
     for i in range(size):
         var = libcudd.Cudd_bddIthVar(manager, i)
         par = Cudd_bddXor(manager, par, var)
+    libcudd.Cudd_Ref(par)
     return par
 
 
-# In[ ]:
 
-
-
-
-
-# ##### Funciones de evaluación
-
-# In[37]:
+# ##### Evaluation functions
 
 
 def evalu(manager, f, miarr_py):
@@ -794,15 +645,7 @@ def evalu(manager, f, miarr_py):
     return(tmp)
 
 
-# In[ ]:
-
-
-
-
-
-# ##### Funciones de bases
-
-# In[38]:
+# ##### Frame functions
 
 
 # devuelve el array de bits ret tal que (arr)_can = (ret)_nueva
@@ -812,8 +655,6 @@ def cambiaBaseArray(manager, arr,nuevaBase):
         ret.append(evalu(manager,nuevaBase[i],arr))
     return(ret)
 
-
-# In[39]:
 
 
 #define el bdd de la relación de cambio de base
@@ -836,11 +677,6 @@ def RelCambiaBase(manager, nuevaBase):
         libcudd.Cudd_RecursiveDeref(manager,ite[i])
     return(R)
 
- 
-
-
-# In[40]:
-
 
 # define la rel de cambio de base a partir de la lista hecho con 
 # las evaluaciones en toda la tabla de verdad
@@ -850,9 +686,6 @@ def RelCambiaBaseTab(manager, nuevaBase):
     arrR = [Btam[i]+Btampar[i] for i in range(len(Btam))]
     R = funcMinterm(manager, arrR)
     return(R)
-
-
-# In[41]:
 
 
 #devuelve un array q de bdd tal que la imagen de (arr)_pi por los q es arr
@@ -905,8 +738,6 @@ def CambioInverso(manager,nuevaBase):
     return(qdef2)
 
 
-# In[42]:
-
 
 # nueva versión: 
 # dada un bdd fa y un array nuevaBase de bdd que sean base de biparticiones,
@@ -924,8 +755,6 @@ def CambiaBase(manager, fa, nuevabase):
                       
 
 
-# In[43]:
-
 
 # dada una serie de bloques, coge de cada bloque al azar la mitad
 def partebin(lista):
@@ -937,8 +766,6 @@ def partebin(lista):
         bloques.append(b1)
     return(bloques)
 
-
-# In[44]:
 
 
 # devuelbe un array de bdd que forman base de size variables
@@ -970,8 +797,6 @@ def randomBase(manager, size):
     return pi
 
 
-# In[45]:
-
 
 # dados unos bdd que forman una base parcial propia para f
 # (es decir, que los bloques de la base, salvo como mucho uno, 
@@ -985,7 +810,9 @@ def ampliaBaseParcial(manager,f,tam, baseparcial):
         temp = []
         for C in Bloques:
             cP = libcudd.Cudd_bddAnd(manager,C,baseparcial[i])
+            libcudd.Cudd_Ref(cP)
             cnP = libcudd.Cudd_bddAnd(manager,C,libBDDlab.My_Cudd_Not(baseparcial[i]))
+            libcudd.Cudd_Ref(cnP)
             temp = temp + [cP] +[cnP]
         Bloques = temp
         
@@ -997,19 +824,23 @@ def ampliaBaseParcial(manager,f,tam, baseparcial):
 
     for C in Bloques:
         cf = libcudd.Cudd_bddAnd(manager,C,f)
+        libcudd.Cudd_Ref(cf)
         cnf = libcudd.Cudd_bddAnd(manager,C,nf)
+        libcudd.Cudd_Ref(cnf)
         num_cf = libcudd.Cudd_CountMinterm(manager,cf,tam)
         num_cnf = libcudd.Cudd_CountMinterm(manager,cnf,tam)
         if num_cf == 0:
             # todos los de C son negativos
             temp = getSomeMinterms(manager,int(num_bloq/2),C,tam)
             notemp = libcudd.Cudd_bddAnd(manager,C,libBDDlab.My_Cudd_Not(temp))
+            libcudd.Cudd_Ref(notemp)
             NuevPos = NuevPos + [temp]
             NuevNeg = NuevNeg + [notemp]
         if num_cnf == 0:
             # todos los de C son positivos
             temp = getSomeMinterms(manager,int(num_bloq/2),C,tam)
             notemp = libcudd.Cudd_bddAnd(manager,C,libBDDlab.My_Cudd_Not(temp))
+            libcudd.Cudd_Ref(notemp)
             NuevPos = NuevPos + [temp]
             NuevNeg = NuevNeg + [notemp]
         if num_cf != 0 and num_cnf != 0:
@@ -1017,27 +848,31 @@ def ampliaBaseParcial(manager,f,tam, baseparcial):
             if num_cf >= num_cnf:
                 temp = getSomeMinterms(manager,int(num_bloq/2),cf,tam)
                 notemp = libcudd.Cudd_bddAnd(manager,C,libBDDlab.My_Cudd_Not(temp))
+                libcudd.Cudd_Ref(notemp)
                 NuevPos = NuevPos + [temp]
                 NuevNeg = NuevNeg + [notemp]
             if num_cf < num_cnf:
                 notemp = getSomeMinterms(manager,int(num_bloq/2),cnf,tam) # cuidado notemp
                 temp = libcudd.Cudd_bddAnd(manager,C,libBDDlab.My_Cudd_Not(notemp))
+                libcudd.Cudd_Ref(notemp)
                 NuevPos = NuevPos + [temp]
                 NuevNeg = NuevNeg + [notemp]
-                
+        libcudd.Cudd_RecursiveDeref(manager,cf)
+        libcudd.Cudd_RecursiveDeref(manager,cnf)
+        libcudd.Cudd_RecursiveDeref(manager,notemp)
+
+    for C in Bloques:
+        libcudd.Cudd_RecursiveDeref(manager,C)
+   
     # construyo el nuevo elemento de la base
     p = libBDDlab.My_Cudd_Not(libcudd.Cudd_ReadOne(manager))
+    libcudd.Cudd_Ref(p)
     for bdd in NuevPos:
         p = libcudd.Cudd_bddOr(migestor,p,bdd)
 
     return p
 
         
-        
-    
-
-
-# In[46]:
 
 
 # crea una base propia para f
@@ -1049,15 +884,9 @@ def creaBasePropia(manager,f,tam):
     return base
 
 
-# In[ ]:
 
+# ##### Relation and function functions
 
-
-
-
-# ##### Funciones de Relaciones y funciones
-
-# In[47]:
 
 
 # crea el BDD de la relación x~y si todos los bits salvo el i son iguales
@@ -1074,8 +903,6 @@ def RelEqExcept(manager,tam,i):
         R = libcudd.Cudd_bddAnd(manager, R,temp)
     return R 
 
-
-# In[48]:
 
 
 # crea el BDD de la relación x~y si todos los bits salvo el i son iguales
@@ -1098,8 +925,6 @@ def RelEqExceptdir(manager,tam,i):
     return R 
 
 
-# In[49]:
-
 
 # crea el BDD de la relación x~y si los bits de la lista están flipados
 def RelEqExceptList(manager,tam,lista):
@@ -1117,8 +942,6 @@ def RelEqExceptList(manager,tam,lista):
         R = libcudd.Cudd_bddAnd(manager, R,temp)
     return R 
 
-
-# In[50]:
 
 
 # crea el BDD de la relación x~y si los bits son iguales
@@ -1139,8 +962,6 @@ def RelEqOrExceptList(manager,tam,lista):
     return R 
 
 
-# In[51]:
-
 
 # crea el BDD de la relación x~y si todos los bits de la lista son iguales
 def RelEq(manager,tam,lista):
@@ -1155,7 +976,6 @@ def RelEq(manager,tam,lista):
     return R 
 
 
-# In[52]:
 
 
 # dado el BDD R de una relación y un array de bits x, 
@@ -1172,9 +992,6 @@ def evalRel(manager,R,x):
     
 
 
-# In[53]:
-
-
 # dada un BDD F que representa una relación funcional
 # (x~y si f(x)=y para la función f) evalua f en el
 # x codificado por la lista
@@ -1188,8 +1005,6 @@ def evalFunRelCube(manager, F, lista):
         temp = libcudd.Cudd_Cofactor(migestor,temp,var)
     return temp
 
-
-# In[54]:
 
 
 # dada una relación funcional F y una lista de listas de bits,
@@ -1214,9 +1029,6 @@ def evalFunRel(manager,F,listalista):
 #bufff, que no no funciona
 
 
-# In[55]:
-
-
 # dada un BDD F que representa una relación funcional
 # devuelve el BDD que caracteriza los valores que toma.
 # size es el tamaño del código de cada elemento, o sea
@@ -1232,7 +1044,6 @@ def setOfValues(manager,F, size):
     return temp
 
 
-# In[56]:
 
 
 # define el bdd de la relación x~y si f(x)> f(y) para cierta
@@ -1248,8 +1059,6 @@ def Rel_fxgtfy(manager, f, tam):
     libcudd.Cudd_RecursiveDeref(manager,fdesp)
     return(R)
 
-
-# In[57]:
 
 
 # define el bdd de la relación x~y si f(x)> f(y) para cierta
@@ -1279,8 +1088,6 @@ def Rel_fxgtfy3(manager, f, tam):
     return(R)
 
 
-# In[58]:
-
 
 # define el bdd de la relación x~y si f(x)> f(y) para cierta
 # funcion f. tam da el tamaño de los arrays sobre los que se aplica f f
@@ -1296,8 +1103,6 @@ def Rel_fxgtfy2(manager, f, tam):
     libcudd.Cudd_RecursiveDeref(manager,Neq)
     return(R2)
 
-
-# In[59]:
 
 
 # define el bdd de la relación x~y si x==y
@@ -1320,11 +1125,6 @@ def Rel_eq(manager, tam):
         libcudd.Cudd_RecursiveDeref(manager,ite[i])
     return(R)
 
- 
-
-
-# In[60]:
-
 
 # devuelve una relación funcional al azar
 def randomRelFunc(manager,tam):
@@ -1332,11 +1132,6 @@ def randomRelFunc(manager,tam):
     minterms = [ x + [int(random.uniform(0, 2)) for _ in range(tam)] for x in lista]
     return funcMintermIni(manager,minterms)
                 
-    
-
-
-# In[61]:
-
 
 # dada una relación R, devuelve la relación inversa
 def RelInv(manager,R,tam):
@@ -1352,18 +1147,15 @@ def RelInv(manager,R,tam):
     return Rinv 
 
 
-# In[62]:
-
 
 # dada una relación R y un bdd x, devuelve el bdd
 # de los sucesores de los vértices de x
 def Succ(manager,R,x,tam):
     gammax = libcudd.Cudd_bddAnd(manager, R, x)
+    libcudd.Cudd_Ref(gammax)
     succesors =  transVarMinus(migestor,setOfValues(manager,gammax,tam),tam,tam,tam)
     return succesors
 
-
-# In[63]:
 
 
 # dada una relación R y un bdd x, devuelve el bdd
@@ -1374,15 +1166,7 @@ def Succ2(manager,R,x,tam):
     return gamma2x
 
 
-# In[ ]:
-
-
-
-
-
-# ##### Funciones de traslado de variables
-
-# In[64]:
+# ##### Funciones for variable traslation
 
 
 # coje la funcion f que depende de las variables x_0,...,x_(tam-1)
@@ -1402,9 +1186,6 @@ def transVar(manager,f,tam):
     
 
 
-# In[65]:
-
-
 # coje la funcion f que depende de las variables x_0,...,x_(tam-1)
 # y devuelve la 
 # función similar que depemde de las x_(0+n),...,x_(tam-1 +n)
@@ -1420,9 +1201,6 @@ def transVarn(manager,f,tam,n):
     libcudd.Cudd_Ref(fdesp)
     return fdesp
     
-
-
-# In[66]:
 
 
 # coje la funcion f que depende de las variables x_a,...,x_(a+tam-1)
@@ -1443,9 +1221,6 @@ def transVarMinus(manager,f, a,tam,n):
     libcudd.Cudd_Ref(fdesp)
     return fdesp
     
-
-
-# In[67]:
 
 
 # coje la funcion f que depende de las variables x_0,...,x_(tam-1)
@@ -1476,9 +1251,6 @@ def transz_to_y(manager,f,tam):
     
 
 
-# In[68]:
-
-
 # devuelve un vector con 0 en las variables de las que no depende f
 # y 1 en las que sí
 def MyVectorSupport(manager,f):
@@ -1492,15 +1264,10 @@ def MyVectorSupport(manager,f):
     
 
 
-# In[ ]:
 
 
+# ##### Reduction functions
 
-
-
-# ##### Funciones de reducción
-
-# In[69]:
 
 
 # El espacio $B^tam$ se aparea en torno al bit pivot
@@ -1596,7 +1363,6 @@ def pasar01a10(manager,f,tam,pivot):
     return fb, q
 
 
-# In[70]:
 
 
 # El espacio $B^tam$ se aparea en torno al bit pivot
@@ -1701,9 +1467,7 @@ def pasar01a10y11(manager,f,tam,pivot):
     
     return fb, q
 
-
-# In[71]:
-
+  
 
 # Esta función calcula una partición equilibrada pi así:
 # El espacio $B^tam$ se aparea por Rel.
@@ -1801,12 +1565,6 @@ def ReducSection(manager, f, tam, Rel,pivot):
     
     
 
-    
-
-
-# In[72]:
-
-
 # retorna la función f cambiada a la base que resulta de substituir
 # la variable pivot por pi. Retorna tambien el cambio de base
 def SubsBase(manager, f, tam, pi, pivot):
@@ -1826,8 +1584,6 @@ def SubsBase(manager, f, tam, pi, pivot):
     return fb, q
 
 
-# In[73]:
-
 
 # devuelve true si p es un array de particiones que forma base
 def esBase(manager,p,tam):
@@ -1843,12 +1599,12 @@ def esBase(manager,p,tam):
         
         for i in range(len(p) - 1):
             p0[i] = libcudd.Cudd_bddAnd(manager, p[i+1], libBDDlab.My_Cudd_Not(p[0]))
+            #libcudd.Cudd_Ref(p0[i])  ---> uf, esto hay que verlo
             p1[i] = libcudd.Cudd_bddAnd(manager, p[i+1], p[0])
+            #libcudd.Cudd_Ref(p1[i])
 
         return esBase(manager,p0,tam) and esBase(manager,p1,tam)   
 
-
-# In[74]:
 
 
 # Esta función selecciona los tridentes, y cambia
