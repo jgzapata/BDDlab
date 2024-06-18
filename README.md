@@ -27,7 +27,7 @@
 
 
 
- jupyter demostrations:
+ jupyter demostrations ( for under review [paper](https://www.researchsquare.com/article/rs-3714732/v1)):
  
 0) [Paper examples](https://github.com/jgzapata/BDDlab/blob/main/PaperExamples.ipynb)
 
